@@ -61,12 +61,6 @@ def text_to_speech():
     except Exception as e:
         print("Error:", e)
         return jsonify({'error': str(e)}), 500
-    finally:
-        # Cleanup the temporary file after sending it
-        try:
-            os.remove(str(temp_audio_path))
-        except OSError as e:
-            print(f"Error deleting file {temp_audio_path}: {e.strerror}")
 
 # Run the Flask app
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ This is a quickly hacked together demo to let you play with OpenAI's text-to-spe
 ### Usage:
 
 - run `python app.py <your OpenAI API key>
-- go to `localhost:5000`
+- go to `http://127.0.0.1:5000`
 
 ![image](https://github.com/JakobBruenker/simple-tts-demo/assets/10101851/06509abf-fa4d-491a-a480-edaa6ca36fd5)
 

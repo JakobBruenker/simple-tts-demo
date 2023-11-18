@@ -25,16 +25,40 @@
 
         #textInput {
             width: 100%;
-	    height: 400px;
+            height: 400px;
             padding: 10px;
             margin-top: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Change the font here */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 1rem;
             box-sizing: border-box;
             resize: vertical;
+        }
+
+        select {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        
+        .dropdown-group {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+        }
+
+        .dropdown-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            margin-bottom: 20px; /* Add margin below the dropdowns */
         }
 
         #submitButton {
@@ -47,6 +71,7 @@
             transition: background-color 0.3s ease;
             display: inline-block;
             vertical-align: middle;
+            margin-bottom: 20px; /* Add margin below the button */
         }
 
         #submitButton:disabled {
@@ -58,26 +83,42 @@
         }
 
         .loader {
-            visibility: hidden; /* Hidden by default, but space reserved */
-            border: 2px solid #f3f3f3; /* Light grey */
-            border-top: 2px solid #3498db; /* Blue */
+            visibility: hidden;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
             border-radius: 50%;
-            width: 24px; /* Adjust width to fit next to the button */
-            height: 24px; /* Adjust height to match the button */
-            vertical-align: middle; /* Align button and loader vertically */
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
             animation: spin 2s linear infinite;
-            margin-left: 10px; /* Space between button and loader */
-            display: inline-block; /* Align button and loader inline */
+            margin-left: 10px;
+            display: inline-block;
         }
 
         #audioPlayer {
-            width: 100%; /* Full width */
-            margin-top: 20px; /* Added margin for consistent spacing */
+            width: 100%;
+            margin-top: 20px;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .dropdown-container {
+                flex-direction: column;
+            }
+
+            .dropdown-group {
+                width: 100%;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -85,7 +126,40 @@
     <div class="container">
         <h1>OpenAI Text-to-Speech</h1>
         <form id="ttsForm">
-            <textarea id="textInput" rows="4" placeholder="Type your text here..."></textarea><br>
+            <textarea id="textInput" placeholder="Type your text here..."></textarea>
+        
+            <div class="dropdown-container">
+                <div class="dropdown-group">
+                    <label for="modelSelect">Model:</label>
+                    <select id="modelSelect">
+                        <option value="tts-1">tts-1</option>
+                        <option value="tts-1-hd">tts-1-hd</option>
+                    </select>
+                </div>
+        
+                <div class="dropdown-group">
+                    <label for="voiceSelect">Voice:</label>
+                    <select id="voiceSelect">
+                        <option value="alloy">Alloy</option>
+                        <option value="echo">Echo</option>
+                        <option value="fable">Fable</option>
+                        <option value="onyx">Onyx</option>
+                        <option value="nova">Nova</option>
+                        <option value="shimmer">Shimmer</option>
+                    </select>
+                </div>
+        
+                <div class="dropdown-group">
+                    <label for="formatSelect">Format:</label>
+                    <select id="formatSelect">
+                        <option value="mp3">MP3</option>
+                        <option value="opus">Opus</option>
+                        <option value="aac">AAC</option>
+                        <option value="flac">FLAC</option>
+                    </select>
+                </div>
+            </div>
+        
             <button type="submit" id="submitButton">Convert to Speech</button>
             <div class="loader" id="loader"></div>
         </form>
@@ -106,6 +180,10 @@
 
         function submitText() {
             var text = document.getElementById('textInput').value;
+            var model = document.getElementById('modelSelect').value;
+            var voice = document.getElementById('voiceSelect').value;
+            var format = document.getElementById('formatSelect').value;
+            var text = document.getElementById('textInput').value;
             var loader = document.getElementById('loader');
             var submitButton = document.getElementById('submitButton');
 
@@ -118,7 +196,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({text: text}),
+                body: JSON.stringify({ text: text, model: model, voice: voice, format: format }),
             })
             .then(response => response.blob())
             .then(blob => {
@@ -140,4 +218,3 @@
     </script>
 </body>
 </html>
-

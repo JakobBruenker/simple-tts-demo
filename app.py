@@ -28,15 +28,28 @@ def index():
 # Endpoint to handle the text-to-speech conversion
 @app.route('/tts', methods=['POST'])
 def text_to_speech():
-    text = request.json.get('text')
-    temp_audio_path = Path("temp_audio.mp3")  # Temporary file path
+    data = request.json
+    text = data.get('text')
+    model = data.get('model', 'tts-1')  # Default to tts-1 if not specified
+    voice = data.get('voice', 'alloy')  # Default to alloy if not specified
+    format = data.get('format', 'mp3')  # Default to mp3 if not specified
+    temp_audio_path = Path("temp_audio." + format)  # Use the selected format
+
+    api_call_details = {
+        "model": model,
+        "input": text,
+        "voice": voice,
+        "format": format
+    }
+    print("Making API call with:", api_call_details)
 
     # Call the OpenAI TTS API
     try:
         response = openai_client.audio.speech.create(
-            model="tts-1",
+            model=model,
             input=text,
-            voice="nova",
+            voice=voice,
+            response_format=format,
         )
         # Stream the audio to a temporary file
         with closing(response):  # Make sure the stream is closed properly
@@ -46,6 +59,7 @@ def text_to_speech():
         # Send the audio file to the client
         return send_file(str(temp_audio_path), as_attachment=True, mimetype='audio/mpeg')
     except Exception as e:
+        print("Error:", e)
         return jsonify({'error': str(e)}), 500
     finally:
         # Cleanup the temporary file after sending it
